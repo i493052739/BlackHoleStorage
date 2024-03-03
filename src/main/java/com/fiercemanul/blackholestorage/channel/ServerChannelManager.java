@@ -79,7 +79,10 @@ public class ServerChannelManager {
 
     @SubscribeEvent
     public void onTick(TickEvent.ServerTickEvent event) {
-        int tickCount = event.getServer().getTickCount();
+        //server出过空值的bug
+        MinecraftServer server = event.getServer();
+        if (server == null) return;
+        int tickCount = server.getTickCount();
         if (tickCount % Config.CHANNEL_FULL_UPDATE_RATE.get() == 0) channelList.forEach((uuid, map) -> map.forEach((id, channel) -> channel.sendFullUpdate()));
         else if (tickCount % Config.CHANNEL_FAST_UPDATE_RATE.get() == 0) channelList.forEach((uuid, map) -> map.forEach((id, channel) -> channel.sendUpdate()));
     }
